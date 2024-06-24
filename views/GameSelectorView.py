@@ -87,16 +87,16 @@ class GameSelectorView(ViewGroup):
 
 
 class GameView(LayerImageView):
-    def __init__(self):
+    def __init__(self, launcherView):
         super().__init__()
         self.game = None
 
         self.setOpacity(0.0)
 
         self.getOverlay().setBorderWidth(3)
-        self.getOverlay().setBorderRadius(20)
+        self.getOverlay().setBorderRadius(launcherView.corners)
         self.getOverlay().setBorderColor(QColor(255, 255, 255))
-        self.getOverlay().setBorderStyle("outset")
+        self.getOverlay().setBorderStyle(self.getOverlay().OUTSET)
         self.getOverlay().setEnabled(False)
 
     def setGame(self, game: Game):
@@ -108,7 +108,7 @@ class GameView(LayerImageView):
 
 class GameCoverView(GameView):
     def __init__(self, launcherView):
-        super().__init__()
+        super().__init__(launcherView)
 
         self.width = Dimensions.getFrom(launcherView.windowWidth, 0.1069)
         self.height = Dimensions.getFrom(launcherView.windowHeight, 0.5882)
@@ -116,7 +116,7 @@ class GameCoverView(GameView):
         self.setAlignment(Qt.AlignTop)
         self.setSize(self.width, self.height)
         self.setFixedSize(self.width, self.height)
-        self.setRoundCorners(20)
+        self.setRoundCorners(launcherView.corners)
 
     def setPixmap(self, pixmap: QPixmap):
         pixmap = pixmap.scaledToWidth(self.width, Qt.TransformationMode.SmoothTransformation)
@@ -125,7 +125,7 @@ class GameCoverView(GameView):
 
 class GameHeaderView(GameView):
     def __init__(self, launcherView):
-        super().__init__()
+        super().__init__(launcherView)
 
         self.width = Dimensions.getFrom(launcherView.windowWidth, 0.2673)
         self.height = Dimensions.getFrom(launcherView.windowHeight, 0.5882)
@@ -133,7 +133,7 @@ class GameHeaderView(GameView):
         self.setAlignment(Qt.AlignCenter)
         self.setSize(self.width, self.height)
         self.setFixedSize(self.width, self.height)
-        self.setRoundCorners(20)
+        self.setRoundCorners(launcherView.corners)
 
     def setPixmap(self, pixmap: QPixmap):
         pixmap = pixmap.scaledToHeight(self.height, Qt.TransformationMode.SmoothTransformation)

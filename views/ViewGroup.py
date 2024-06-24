@@ -6,6 +6,9 @@ from PyQt5.QtGui import QPainterPath, QRegion, QShowEvent, QPixmap, QColor, QScr
 
 
 class View(QLabel):
+    INSET = "inset"
+    OUTSET = "outset"
+
     def __init__(self):
         super().__init__()
 

@@ -14,9 +14,11 @@ class GameTitle(ViewGroup):
         self.setContentsMargins(launcherView.windowPadding, int(launcherView.defaultPadding), launcherView.defaultPadding, launcherView.defaultPadding)
         self.setOpacity(0.0)
 
+        iconSize = Dimensions.getFrom(launcherView.windowWidth, 0.0250)
+
         self.icon = ImageView()
-        self.icon.setSize(48, 48)
-        self.icon.setFixedSize(48, 48)
+        self.icon.setSize(iconSize, iconSize)
+        self.icon.setFixedSize(iconSize, iconSize)
         self.icon.setScaledContents(True)
         self.addView(self.icon)
 

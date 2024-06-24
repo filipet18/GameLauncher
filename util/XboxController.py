@@ -24,7 +24,7 @@ class XboxController:
         self.Vibrator = XboxControllerVibrator(self.joystick)
 
     def update(self):
-        event = pygame.event.wait(1)
+        event = pygame.event.wait(50)
         if event.type == CONTROLLER_CONNECTED:
             self.xboxControllerListener.onConnected()
         elif event.type == CONTROLLER_DISCONNECTED:

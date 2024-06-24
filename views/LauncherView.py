@@ -23,7 +23,7 @@ expandStep.BUSY = 2
 class LauncherView:
     def __init__(self, gameSettings: GameSettings, gameSelectCallback):
         self.gameSettings = gameSettings
-        self.app = QApplication([])
+        self.app = gameSettings.getApp()
         self.gameSelectCallback = OnGameSelectListener(gameSelectCallback)
         self.screen = self.app.screens()[1]
 
@@ -31,6 +31,7 @@ class LauncherView:
         self.windowPadding = int(self.defaultPadding / 2)
         self.windowHeight = Dimensions.getFrom(self.screen.size().height(), 0.4166)
         self.windowWidth = self.screen.size().width() - (self.windowPadding * 2)
+        self.corners = Dimensions.getFrom(self.windowWidth, 0.0104)
 
         self.expandStep = expandStep.COLLAPSED
         self.isLayoutInit = False

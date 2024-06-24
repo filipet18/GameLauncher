@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from views.ViewGroup import ViewGroup, ImageView
 from util.String import String
+from util.Dimensions import Dimensions
 
 
 class XboxTitle(ViewGroup):
@@ -28,10 +29,12 @@ class XboxTitle(ViewGroup):
         self.title.setFont(font)
         self.addView(self.title)
 
+        iconSize = Dimensions.getFrom(launcherView.windowWidth, 0.0250)
+
         self.icon = ImageView()
         self.icon.setPixmap(QPixmap("res/xboxIcon.png"))
-        self.icon.setSize(48, 48)
-        self.icon.setFixedSize(48, 48)
+        self.icon.setSize(iconSize, iconSize)
+        self.icon.setFixedSize(iconSize, iconSize)
         self.icon.setScaledContents(True)
         self.addView(self.icon)
 

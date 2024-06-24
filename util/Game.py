@@ -15,6 +15,7 @@ from PyQt5.QtWidgets import *
 
 from views.ViewGroup import ViewGroup, ImageView
 from util.String import String
+from util.Dimensions import Dimensions
 
 LAST_PLAYED_GAME = "lastPlayedGame"
 GAME_PATH = "gamePath"
@@ -29,10 +30,12 @@ class GameObserverView(ViewGroup):
 
         self.setOpacity(0.0)
 
+        iconSize = Dimensions.getFrom(launcherView.windowWidth, 0.0250)
+
         self.icon = ImageView()
         self.icon.setPixmap(QPixmap("res/xboxIcon.png"))
-        self.icon.setSize(48, 48)
-        self.icon.setFixedSize(48, 48)
+        self.icon.setSize(iconSize, iconSize)
+        self.icon.setFixedSize(iconSize, iconSize)
         self.icon.setScaledContents(True)
         self.addView(self.icon)
 
@@ -141,26 +144,13 @@ class GameList(list):
 
 class GameSettings:
     def __init__(self):
+        self.__app = QApplication([])
         self.__gamePath = None
         self.__gameList = GameList()
         self.__gameObserver = GameObserver()
 
         if self.isSetupFinished():
             self.init()
-
-    def init(self):
-        self.__gameList.clear()
-
-        self.__gamePath = self.__read()[GAME_PATH]
-        self.__gameList.setLastPlayedGame(Game(self, self.__read()[LAST_PLAYED_GAME]))
-        for gameFolder in os.listdir(self.__gamePath):
-            gamePath = self.__gamePath + gameFolder
-            if exists(gamePath + "/resources"):
-                game = Game(self, gamePath)
-                if game.getName() == self.__gameList.getLastPlayedGame().getName():
-                    continue
-
-                self.__gameList.append(game)
 
     @staticmethod
     def __createDefault():
@@ -188,6 +178,26 @@ class GameSettings:
         jsonBuffer = json.loads(file.read())
         file.close()
         return jsonBuffer
+
+    def init(self):
+        self.__gameList.clear()
+
+        self.__gamePath = self.__read()[GAME_PATH]
+        self.__gameList.setLastPlayedGame(Game(self, self.__read()[LAST_PLAYED_GAME]))
+        for gameFolder in os.listdir(self.__gamePath):
+            gamePath = self.__gamePath + gameFolder
+            if exists(gamePath + "/resources"):
+                game = Game(self, gamePath)
+                if game.getName() == self.__gameList.getLastPlayedGame().getName():
+                    continue
+
+                self.__gameList.append(game)
+
+    def getScreen(self):
+        return self.__app.screens()[1]
+
+    def getApp(self):
+        return self.__app
 
     def getGameObserver(self):
         return self.__gameObserver

@@ -6,6 +6,7 @@ STRING_FILE = "strings.config"
 
 String = types.SimpleNamespace()
 String.SELECT_YOUR_GAME_FOLDER = "Selecione sua pasta de jogos"
+String.CONTROLLER_CONNECTED = "Controle Conectado"
 String.CONNECTED = "Conectado"
 String.DISCONNECTED = "Desconectado"
 String.PRESS = "Aperte"
@@ -19,6 +20,9 @@ def loadStringsFile():
         jsonBuffer = json.loads(string.read())
 
     try: String.SELECT_YOUR_GAME_FOLDER = jsonBuffer["SELECT_YOUR_GAME_FOLDER"]
+    except KeyError: pass
+
+    try: String.CONTROLLER_CONNECTED = jsonBuffer["CONTROLLER_CONNECTED"]
     except KeyError: pass
 
     try: String.CONNECTED = jsonBuffer["CONNECTED"]
@@ -43,6 +47,7 @@ def loadStringsFile():
 def saveStringsFile():
     jsonBuffer = json.loads("{}")
     jsonBuffer.update({'SELECT_YOUR_GAME_FOLDER': String.SELECT_YOUR_GAME_FOLDER})
+    jsonBuffer.update({'CONTROLLER_CONNECTED': String.CONTROLLER_CONNECTED})
     jsonBuffer.update({'CONNECTED': String.CONNECTED})
     jsonBuffer.update({'DISCONNECTED': String.DISCONNECTED})
     jsonBuffer.update({'PRESS': String.PRESS})

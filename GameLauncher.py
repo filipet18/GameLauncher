@@ -2,19 +2,22 @@ from util.Game import Game, GameList, GameSettings
 from util.XboxController import XboxController
 from util.XboxControllerConstants import *
 from views.LauncherView import (LauncherView, expandStep)
+from views.ToastView import ToastView
 
 #VARIABLE'S
 xboxController: XboxController
 launcherView: LauncherView
 gameSettings: GameSettings
+toastView: ToastView
 
 
 def onCreate():
-    global gameSettings, xboxController, launcherView
+    global gameSettings, xboxController, launcherView, toastView
 
     gameSettings = GameSettings()
     xboxController = XboxController(gameSettings, ControllerListener(), ControllerLongPress())
     launcherView = LauncherView(gameSettings, LauncherViewGameSelect())
+    toastView = ToastView(gameSettings)
 
     while True:
         xboxController.update()
@@ -49,10 +52,12 @@ class ControllerLongPress:
 class ControllerListener:
     @staticmethod
     def onConnected():
-        xboxController.Vibrator.vibrateSequentially(WELCOME_PATTERN_VIBRATION)
+        toastView.expand()
+        # xboxController.Vibrator.vibrateSequentially(WELCOME_PATTERN_VIBRATION)
 
     @staticmethod
     def onDisconnected():
+        toastView.collapse()
         launcherView.collapse()
 
     @staticmethod
@@ -70,11 +75,13 @@ class ControllerListener:
 
     @staticmethod
     def onWindowsButtonClick():
+        toastView.expand()
         pass
 
     @staticmethod
     def onOptionsButtonClick():
-        print("onOptionsButtonClick")
+        toastView.collapse()
+        pass
 
     @staticmethod
     def onDirPadEvent(padEventX, padEventY):

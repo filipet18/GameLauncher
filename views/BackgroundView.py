@@ -11,7 +11,7 @@ class BackgroundView(ViewGroup):
         self.launcherView = launcherView
         self.currentGame = None
         self.setSize(launcherView.windowWidth, launcherView.windowHeight)
-        self.setRoundCorners(20)
+        self.setRoundCorners(launcherView.corners)
 
         self.overlay = QLabel()
         self.overlay.setStyleSheet("background: rgb(0, 0, 0, 100);")
