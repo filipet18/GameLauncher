@@ -14,7 +14,7 @@ class BackgroundView(ViewGroup):
         self.setRoundCorners(launcherView.corners)
 
         self.overlay = QLabel()
-        self.overlay.setStyleSheet("background: rgb(0, 0, 0, 100);")
+        self.overlay.setStyleSheet("background: rgba(0, 0, 0, 100);")
         self.overlay.setScaledContents(False)
         self.overlay.setAlignment(Qt.AlignCenter)
         self.addView(self.overlay)

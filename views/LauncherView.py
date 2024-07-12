@@ -25,7 +25,7 @@ class LauncherView:
         self.gameSettings = gameSettings
         self.app = gameSettings.getApp()
         self.gameSelectCallback = OnGameSelectListener(gameSelectCallback)
-        self.screen = self.app.screens()[1]
+        self.screen = gameSettings.getScreen()
 
         self.defaultPadding = Dimensions.getFrom(self.screen.size().height(), 0.0462)
         self.windowPadding = int(self.defaultPadding / 2)

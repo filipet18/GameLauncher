@@ -1,25 +1,26 @@
-from util.Game import Game, GameList, GameSettings
+from util.Game import Game, GameSettings
 from util.XboxController import XboxController
 from util.XboxControllerConstants import *
 from views.LauncherView import (LauncherView, expandStep)
 from views.ToastView import ToastView
+from Application import Context
 
-#VARIABLE'S
+# VARIABLE'S
 xboxController: XboxController
 launcherView: LauncherView
 gameSettings: GameSettings
 toastView: ToastView
 
 
-def onCreate():
-    global gameSettings, xboxController, launcherView, toastView
+class GameLauncher(Context):
+    def onCreate(self):
+        global gameSettings, xboxController, launcherView, toastView
+        gameSettings = GameSettings(self)
+        xboxController = XboxController(gameSettings, ControllerListener(), ControllerLongPress())
+        launcherView = LauncherView(gameSettings, LauncherViewGameSelect())
+        toastView = ToastView(self, gameSettings)
 
-    gameSettings = GameSettings()
-    xboxController = XboxController(gameSettings, ControllerListener(), ControllerLongPress())
-    launcherView = LauncherView(gameSettings, LauncherViewGameSelect())
-    toastView = ToastView(gameSettings)
-
-    while True:
+    def onLoop(self):
         xboxController.update()
         launcherView.update()
         gameSettings.update()
@@ -53,7 +54,7 @@ class ControllerListener:
     @staticmethod
     def onConnected():
         toastView.expand()
-        # xboxController.Vibrator.vibrateSequentially(WELCOME_PATTERN_VIBRATION)
+        xboxController.Vibrator.vibrateSequentially(WELCOME_PATTERN_VIBRATION)
 
     @staticmethod
     def onDisconnected():
@@ -72,15 +73,14 @@ class ControllerListener:
     @staticmethod
     def onShareButtonClick():
         launcherView.collapse()
+        pass
 
     @staticmethod
     def onWindowsButtonClick():
-        toastView.expand()
         pass
 
     @staticmethod
     def onOptionsButtonClick():
-        toastView.collapse()
         pass
 
     @staticmethod
@@ -99,6 +99,3 @@ class ControllerListener:
     @staticmethod
     def onButtonClick(event):
         print("onButtonClick", event)
-
-
-if __name__ == "__main__": onCreate()

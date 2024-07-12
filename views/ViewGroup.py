@@ -29,7 +29,7 @@ class View(QLabel):
         self.setStyleSheet(self.__getStyleSheet())
 
     def setBorderColor(self, color: QColor):
-        self.__overlayStyleSheet["border-color"] = "rgba({},{},{})".format(color.red(), color.green(), color.blue(), color.alpha())
+        self.__overlayStyleSheet["border-color"] = "rgba({},{},{},{})".format(color.red(), color.green(), color.blue(), color.alpha())
         self.setStyleSheet(self.__getStyleSheet())
 
     def setBorderStyle(self, style):
@@ -37,7 +37,7 @@ class View(QLabel):
         self.setStyleSheet(self.__getStyleSheet())
 
     def setBorderRadius(self, radius):
-        self.__overlayStyleSheet["border-radius"] = "{}px".format(radius)
+        self.__overlayStyleSheet["border-radius"] = "{}px".format(int(radius))
         self.setStyleSheet(self.__getStyleSheet())
 
     def setBackgroundColor(self, color: QColor):

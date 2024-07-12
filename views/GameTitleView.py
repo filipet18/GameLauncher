@@ -45,4 +45,3 @@ class GameTitle(ViewGroup):
 
     def hide(self):
         self.animateOpacityTo(0.0, 300)
-

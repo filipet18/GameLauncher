@@ -2,7 +2,6 @@ from PyQt5.QtWidgets import QLabel
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from views.ViewGroup import ViewGroup, ImageView
-from util.String import String
 from util.Dimensions import Dimensions
 
 
@@ -16,7 +15,7 @@ class XboxTitle(ViewGroup):
         self.setOpacity(0.0)
 
         self.title = QLabel()
-        self.title.setText(String.PRESS_TO_PLAY)
+        self.title.setText(launcherView.gameSettings.context.getString().PRESS_TO_PLAY)
         self.title.setAlignment(Qt.AlignRight | Qt.AlignCenter)
 
         palette = self.title.palette()
@@ -32,7 +31,7 @@ class XboxTitle(ViewGroup):
         iconSize = Dimensions.getFrom(launcherView.windowWidth, 0.0250)
 
         self.icon = ImageView()
-        self.icon.setPixmap(QPixmap("res/xboxIcon.png"))
+        self.icon.setPixmap(QPixmap(str(launcherView.gameSettings.context.getRootPath()) + "\\res/xboxIcon.png"))
         self.icon.setSize(iconSize, iconSize)
         self.icon.setFixedSize(iconSize, iconSize)
         self.icon.setScaledContents(True)

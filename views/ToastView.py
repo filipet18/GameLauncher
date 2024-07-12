@@ -4,9 +4,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QPixmap, QColor, QResizeEvent, QPalette, QFont
 
 from util.Game import GameSettings
-from util.String import String
 from util.Dimensions import Dimensions
 from views.ViewGroup import ViewGroup, View, ImageView
+from Application import Context
 
 expandStep = types.SimpleNamespace()
 expandStep.COLLAPSED = 0
@@ -30,17 +30,17 @@ class XboxIcon(ImageView):
         super().__init__()
 
         padding = Dimensions.getFrom(toastView.windowHeight, 0.1250)
-        self.setPixmap(QPixmap("res/xbox"))
+        self.setPixmap(QPixmap(str(toastView.gameSettings.context.getRootPath()) + "\\res/xbox"))
         self.setScaledContents(True)
         self.setFixedSize(toastView.windowHeight, toastView.windowHeight)
         self.setContentsMargins(padding, padding, padding, padding)
         
         
 class TextView(ViewGroup):
-    def __init__(self, toastView):
+    def __init__(self, context: Context):
         super().__init__(ViewGroup.VERTICAL)
 
-        self.toastView = toastView
+        self.context = context
         self.setOpacity(0.0)
         self.setAlignment(Qt.AlignHCenter)
 
@@ -50,7 +50,7 @@ class TextView(ViewGroup):
         font.setFamily("Poppins")
         font.setPixelSize(17)
 
-        self.title = QLabel(String.CONTROLLER_CONNECTED)
+        self.title = QLabel(context.getString().CONTROLLER_CONNECTED)
         self.title.setPalette(palette)
         self.title.setFont(font)
         self.addView(self.title)
@@ -58,7 +58,7 @@ class TextView(ViewGroup):
         font.setPixelSize(10)
         font.setFamily("Poppins Medium")
 
-        self.pressToPlay = QLabel(String.PRESS_TO_PLAY)
+        self.pressToPlay = QLabel(context.getString().PRESS_TO_PLAY)
         self.pressToPlay.setPalette(palette)
         self.pressToPlay.setFont(font)
         self.addView(self.pressToPlay)
@@ -70,14 +70,15 @@ class TextView(ViewGroup):
         self.pressToPlay.setGeometry(x, self.pressToPlay.geometry().top(), self.pressToPlay.fontMetrics().boundingRect(self.pressToPlay.text()).width(), self.pressToPlay.geometry().height())
 
 
-class ToastView:
-    def __init__(self, gameSettings: GameSettings):
+class ToastView(Context):
+    def __init__(self, context: Context, gameSettings: GameSettings):
+        super().__init__(context)
         self.gameSettings = gameSettings
         self.screen = gameSettings.getScreen()
 
         self.windowPadding = Dimensions.getFrom(self.screen.size().height(), 0.0231)
-        self.collapsedSize = Dimensions.getFrom(self.screen.size().height(), 0.0781)
-        self.expandedSize = Dimensions.getFrom(self.screen.size().width(), 0.2562)
+        self.collapsedSize = Dimensions.getFrom(self.screen.size().height(), 0.0581)
+        self.expandedSize = Dimensions.getFrom(self.screen.size().height(), 0.3)
 
         self.windowHeight = self.collapsedSize
         self.windowWidth = self.collapsedSize

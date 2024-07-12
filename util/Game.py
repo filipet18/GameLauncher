@@ -1,25 +1,18 @@
-import glob
 import json
-import pathlib
-import subprocess
-import sys
 import os
-import ctypes
 import psutil
-from os.path import isfile, isdir, exists
+from os.path import isdir, exists
 from tkinter.filedialog import askdirectory
 
-from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QPixmap, QFontMetrics, QColor, QResizeEvent
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QResizeEvent
 from PyQt5.QtWidgets import *
 
 from views.ViewGroup import ViewGroup, ImageView
-from util.String import String
 from util.Dimensions import Dimensions
 
 LAST_PLAYED_GAME = "lastPlayedGame"
 GAME_PATH = "gamePath"
-SETTINGS_CONFIG = "settings.config"
 
 
 class GameObserverView(ViewGroup):
@@ -33,14 +26,14 @@ class GameObserverView(ViewGroup):
         iconSize = Dimensions.getFrom(launcherView.windowWidth, 0.0250)
 
         self.icon = ImageView()
-        self.icon.setPixmap(QPixmap("res/xboxIcon.png"))
+        self.icon.setPixmap(QPixmap(str(launcherView.gameSettings.context.getRootPath()) + "\\res/xboxIcon.png"))
         self.icon.setSize(iconSize, iconSize)
         self.icon.setFixedSize(iconSize, iconSize)
         self.icon.setScaledContents(True)
         self.addView(self.icon)
 
         self.title = QLabel()
-        self.title.setText(String.STARTING_GAME)
+        self.title.setText(self.launcherView.gameSettings.context.getString().STARTING_GAME)
         self.title.setAlignment(Qt.AlignHCenter)
         self.title.setContentsMargins(0, 0, 0, 0)
 
@@ -143,7 +136,8 @@ class GameList(list):
 
 
 class GameSettings:
-    def __init__(self):
+    def __init__(self, context):
+        self.context = context
         self.__app = QApplication([])
         self.__gamePath = None
         self.__gameList = GameList()
@@ -152,29 +146,31 @@ class GameSettings:
         if self.isSetupFinished():
             self.init()
 
-    @staticmethod
-    def __createDefault():
+    def __getPath(self):
+        return str(self.context.getRootPath()) + "\\settings.config"
+
+    def __createDefault(self):
         jsonBuffer = json.loads("{}")
         jsonBuffer[LAST_PLAYED_GAME] = ""
         jsonBuffer[GAME_PATH] = ""
 
-        file = open(SETTINGS_CONFIG, "w", encoding="UTF-8")
+        file = open(self.__getPath(), "w", encoding="UTF-8")
         file.write(json.dumps(jsonBuffer))
         file.close()
 
     def __write(self, value: json):
-        if not exists(SETTINGS_CONFIG):
+        if not exists(self.__getPath()):
             self.__createDefault()
 
-        file = open(SETTINGS_CONFIG, "w", encoding="UTF-8")
+        file = open(self.__getPath(), "w", encoding="UTF-8")
         file.write(json.dumps(value))
         file.close()
 
     def __read(self):
-        if not exists(SETTINGS_CONFIG):
+        if not exists(self.__getPath()):
             self.__createDefault()
 
-        file = open(SETTINGS_CONFIG, "r", encoding="UTF-8")
+        file = open(self.__getPath(), "r", encoding="UTF-8")
         jsonBuffer = json.loads(file.read())
         file.close()
         return jsonBuffer
@@ -184,6 +180,9 @@ class GameSettings:
 
         self.__gamePath = self.__read()[GAME_PATH]
         self.__gameList.setLastPlayedGame(Game(self, self.__read()[LAST_PLAYED_GAME]))
+        if not exists(self.__gamePath):
+            return
+
         for gameFolder in os.listdir(self.__gamePath):
             gamePath = self.__gamePath + gameFolder
             if exists(gamePath + "/resources"):
@@ -194,7 +193,7 @@ class GameSettings:
                 self.__gameList.append(game)
 
     def getScreen(self):
-        return self.__app.screens()[1]
+        return self.__app.screens()[0]
 
     def getApp(self):
         return self.__app
@@ -212,7 +211,7 @@ class GameSettings:
         if self.isSetupFinished():
             return
 
-        self.__gamePath = askdirectory(title=String.SELECT_YOUR_GAME_FOLDER)
+        self.__gamePath = askdirectory(title=self.context.getString().SELECT_YOUR_GAME_FOLDER)
         if len(self.__gamePath) == 0:
             self.__gamePath = None
             return

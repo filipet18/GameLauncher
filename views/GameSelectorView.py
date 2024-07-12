@@ -1,3 +1,4 @@
+import pygame.mixer
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, QSequentialAnimationGroup, QPropertyAnimation, QMargins
 from PyQt5.QtGui import QPixmap, QColor
@@ -22,6 +23,10 @@ class GameSelectorView(ViewGroup):
         self.addView(self.lastPlayedGame)
 
         self.gameViewList = []
+
+        pygame.mixer.init()
+        pygame.mixer.music.load(str(launcherView.gameSettings.context.getRootPath()) + "\\res/sound.mp3")
+        pygame.mixer.music.set_volume(0.2)
 
     def __refreshCurrentGameIndex(self, dirX):
         self.currentGameIndex = self.currentGameIndex + dirX
@@ -79,6 +84,7 @@ class GameSelectorView(ViewGroup):
         self.lastPlayedGame.setPixmap(lastPlayedGame.getHeader())
 
     def inputHorizontal(self, dirEventX):
+        pygame.mixer.music.play()
         self.gameViewList[self.currentGameIndex].getOverlay().setEnabled(False)
         self.__refreshCurrentGameIndex(dirEventX)
         self.gameViewList[self.currentGameIndex].getOverlay().setEnabled(True)
@@ -95,7 +101,7 @@ class GameView(LayerImageView):
 
         self.getOverlay().setBorderWidth(3)
         self.getOverlay().setBorderRadius(launcherView.corners)
-        self.getOverlay().setBorderColor(QColor(255, 255, 255))
+        self.getOverlay().setBorderColor(QColor(255, 255, 255, 255))
         self.getOverlay().setBorderStyle(self.getOverlay().OUTSET)
         self.getOverlay().setEnabled(False)
 
